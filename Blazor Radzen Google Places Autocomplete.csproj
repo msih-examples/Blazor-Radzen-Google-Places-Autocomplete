@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorGoogleMaps" Version="1.5.3" />
     <PackageReference Include="Radzen.Blazor" Version="3.15.5" />
   </ItemGroup>
 
