@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using GoogleMapsComponents.Maps.Places
+@inject IJSRuntime JSRuntime;
 
 <PageTitle>Index</PageTitle>
 
@@ -7,3 +9,58 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<RadzenTextBox style="width: 100%;" @ref="addressBoxRadzenTextBox" Name="BusinessAddress1" value="@formattedAddress" />
+
+
+@code {
+
+    private ElementReference addressBox;
+    private RadzenTextBox addressBoxRadzenTextBox;
+    private string formattedAddress;
+    private Autocomplete autocomplete;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            addressBox = addressBoxRadzenTextBox.Element;
+            // setup google address auto complete
+            await SetupGoogleAddressAutoComplete();
+        }        
+    }
+
+    private async Task SetupGoogleAddressAutoComplete()
+    {
+        //    Logger.LogInformation("SetupGoogleAddressAutoComplete called");
+        this.autocomplete = await Autocomplete.CreateAsync(JSRuntime, addressBox, new AutocompleteOptions
+            {
+                StrictBounds = false,
+            });
+
+        //await autocomplete.SetFields(new []{ "address_components", "geometry", "icon", "name" }); , "formatted_Address" formatted_address
+        await this.autocomplete.SetFields(new[] { "address_components", "place_id", "formatted_address" });
+
+        await this.autocomplete.AddListener("place_changed", async () =>
+        {
+            var place = await this.autocomplete.GetPlace();
+
+            if (place?.AddressComponents == null)
+            {
+               // this.message = "No results available for " + place?.Name;
+            }
+            else
+            {
+                var placeId = place.PlaceId;
+                var streetNumber = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("street_number"))?.LongName;
+                var street = place.AddressComponents.FirstOrDefault(a => a.Types != null && (a.Types.Contains("route") || a.Types.Contains("street_address")))?.LongName;
+                var city = place.AddressComponents.FirstOrDefault(a => a.Types != null && (a.Types.Contains("locality") || a.Types.Contains("neighborhood")))?.LongName;
+                var state = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("administrative_area_level_1"))?.LongName;
+                var country = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("country"))?.LongName;
+                var postcode = place.AddressComponents.FirstOrDefault(a => a.Types != null && a.Types.Contains("postal_code"))?.LongName;
+                var formattedAddress = place.FormattedAddress;    
+            }
+        });
+    }
+}
