@@ -7,4 +7,8 @@
     <RootNamespace>Blazor_Radzen_Google_Places_Autocomplete</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Radzen.Blazor" Version="3.15.5" />
+  </ItemGroup>
+
 </Project>
