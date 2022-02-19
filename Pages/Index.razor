@@ -7,13 +7,15 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>An example of using Google Places Automcomplete with Blazor Radzen components.</h1>
+<RadzenLink Path="https://github.com/MSIH/Blazor-Radzen-Google-Places-Autocomplete" Text="source code: https://github.com/MSIH/Blazor-Radzen-Google-Places-Autocomplete" target="_blank" />
 
-Welcome to your new app.
+<hr />
 
-<SurveyPrompt Title="How is Blazor working for you?" />
-
+<h4 class="mb-4">RadzenTextBox using Google Places Automcomplete</h4>
 <RadzenTextBox style="width: 100%;" @ref="addressBoxRadzenTextBox" Name="BusinessAddress1" value="@formattedAddress" Change=@GoogleAddressAutoComplete />
+<hr />
+<h4 class="mb-4">RadzenTextArea display result JSON</h4>
 <RadzenTextArea value="@placeData" Class="w-100" />
 
 @code {
